@@ -1,0 +1,6 @@
+CREATE TABLE options (
+    id BIGSERIAL PRIMARY KEY,
+    poll_id BIGINT NOT NULL REFERENCES polls(id),
+    content VARCHAR(1024) NOT NULL,
+    counts INT NOT NULL DEFAULT 0
+);

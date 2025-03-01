@@ -1,0 +1,12 @@
+with-expecter: true
+issue-845-fix: True
+resolve-type-alias: False
+disable-version-string: True
+dir: "."
+outpkg: mocks
+packages:
+ github.com/majidmohsenifar/hichapp/repository:
+    interfaces:
+      Querier:
+        config:
+          filename: repository.go

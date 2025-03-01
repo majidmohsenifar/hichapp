@@ -1,0 +1,249 @@
+definitions:
+  api.CreatePollReq:
+    properties:
+      options:
+        items:
+          type: string
+        type: array
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+    required:
+    - options
+    - title
+    type: object
+  api.ErrorCode:
+    properties:
+      code:
+        example: 404
+        type: integer
+      message:
+        example: item not found
+        type: string
+    type: object
+  api.ResponseFailure:
+    properties:
+      error:
+        $ref: '#/definitions/api.ErrorCode'
+      success:
+        example: false
+        type: boolean
+    type: object
+  api.ResponseSuccess:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  api.VoteReq:
+    properties:
+      option_index:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - option_index
+    - user_id
+    type: object
+  poll.Option:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+    type: object
+  poll.SinglePollList:
+    properties:
+      id:
+        type: integer
+      options:
+        items:
+          $ref: '#/definitions/poll.Option'
+        type: array
+      title:
+        type: string
+    type: object
+  statistic.StatsResult:
+    properties:
+      pollID:
+        type: integer
+      votes:
+        items:
+          $ref: '#/definitions/statistic.StatsVote'
+        type: array
+    type: object
+  statistic.StatsVote:
+    properties:
+      count:
+        type: integer
+      option:
+        type: string
+    type: object
+info:
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+paths:
+  /api/v1/polls:
+    get:
+      description: list of polls
+      operationId: PollList
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: PageSize
+        in: query
+        name: page_size
+        type: integer
+      - description: Tag
+        in: query
+        name: tag
+        type: string
+      - description: User-ID
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/poll.SinglePollList'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ResponseFailure'
+      summary: list of polls
+      tags:
+      - Poll
+    post:
+      description: create poll
+      operationId: CreatePoll
+      parameters:
+      - description: Create-Poll-Params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreatePollReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ResponseFailure'
+      summary: create poll
+      tags:
+      - Poll
+  /api/v1/polls/{id}/skip:
+    post:
+      description: skip poll
+      operationId: Skip
+      parameters:
+      - description: Vote-Params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.VoteReq'
+      - description: Vote ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ResponseFailure'
+      summary: skip poll
+      tags:
+      - Poll
+  /api/v1/polls/{id}/stats:
+    get:
+      description: list of poll stats
+      operationId: PollStats
+      parameters:
+      - description: Vote ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/statistic.StatsResult'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ResponseFailure'
+      summary: list of poll stats
+      tags:
+      - PollStats
+  /api/v1/polls/{id}/vote:
+    post:
+      description: vote poll
+      operationId: Vote
+      parameters:
+      - description: Vote-Params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.VoteReq'
+      - description: Vote ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ResponseFailure'
+      summary: vote to poll
+      tags:
+      - Poll
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

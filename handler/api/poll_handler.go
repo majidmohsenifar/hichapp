@@ -24,7 +24,7 @@ type CreatePollReq struct {
 
 type PollListReq struct {
 	Page     int64  `form:"page" validate:"gte=0"`
-	PageSize int16  `form:"page_size" validate:"gte=2,lte=100"`
+	PageSize int16  `form:"page_size" validate:"gte=2,lte=100000"`
 	Tag      string `form:"tag"`
 	UserID   int64  `form:"user_id" validate:"required,gt=0"`
 }

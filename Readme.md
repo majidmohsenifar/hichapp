@@ -40,8 +40,6 @@ do heavy query for counting the votes for stats api.
 - for limiting the vote of users, we have UserVoteLimiter which keeps track of user daily votes.
 - there is a chance that user may vote for more than 100 polls, if use the script that can request 
 so many votes at the same time, if we want to avoid that, we should use locking mechanism (not implemented).
-- there is stress_test script using wrk,
-to run it you should have wrk and jq installed on your machine. then run ```stresstest.sh```
 - no cache is used for the stats api, because the rate of voting causes to invalidate cache almost instantly,
 unless we don't care about the actual count of selected options. index on db would be enough for now.
 

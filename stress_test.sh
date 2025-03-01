@@ -17,7 +17,7 @@ ROUTES=(
 PAYLOAD_POST='{"title": "title1", "options": ["op1","op2"], "tags":["tag1","tag2"]}'
 PAYLOAD_VOTE_TEMPLATE='{"user_id": %d, "option_index":1}'
 PAYLOAD_SKIP_TEMPLATE='{"user_id": %d}'
-QUERY_PARAMS="?page=1&page_size=10&user_id=1"
+QUERY_PARAMS="?page=0&page_size=100000&user_id=1"
 
 IDS=()
 USER_ID=1

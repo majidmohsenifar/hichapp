@@ -4,6 +4,7 @@ definitions:
       options:
         items:
           type: string
+        minItems: 2
         type: array
       tags:
         items:
@@ -48,15 +49,7 @@ definitions:
       user_id:
         type: integer
     required:
-    - option_index
     - user_id
-    type: object
-  poll.Option:
-    properties:
-      content:
-        type: string
-      id:
-        type: integer
     type: object
   poll.SinglePollList:
     properties:
@@ -64,7 +57,11 @@ definitions:
         type: integer
       options:
         items:
-          $ref: '#/definitions/poll.Option'
+          type: string
+        type: array
+      tags:
+        items:
+          type: string
         type: array
       title:
         type: string
@@ -147,8 +144,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
         "500":
           description: Internal Server Error
           schema:
@@ -175,8 +172,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
         "500":
           description: Internal Server Error
           schema:
@@ -232,8 +229,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
         "500":
           description: Internal Server Error
           schema:

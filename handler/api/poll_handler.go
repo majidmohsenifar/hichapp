@@ -41,7 +41,7 @@ type VoteReq struct {
 //	@Produce		json
 //
 // @Param		request body CreatePollReq true "Create-Poll-Params"
-// @Success		200
+// @Success		201
 // @Failure		500		{object}	ResponseFailure
 // @Router			/api/v1/polls [post]
 func (h *PollHandler) Create(c *gin.Context) {
@@ -126,7 +126,7 @@ func (h *PollHandler) List(c *gin.Context) {
 //
 // @Param		request body VoteReq true "Vote-Params"
 // @Param		id path int true "Vote ID"
-// @Success		200
+// @Success		201
 // @Failure		500		{object}	ResponseFailure
 // @Router			/api/v1/polls/{id}/vote [post]
 func (h *PollHandler) Vote(c *gin.Context) {
@@ -203,7 +203,7 @@ func (h *PollHandler) Vote(c *gin.Context) {
 //
 // @Param		request body VoteReq true "Vote-Params"
 // @Param		id path int true "Vote ID"
-// @Success		200
+// @Success		201
 // @Failure		500		{object}	ResponseFailure
 // @Router			/api/v1/polls/{id}/skip [post]
 func (h *PollHandler) Skip(c *gin.Context) {

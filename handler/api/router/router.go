@@ -42,7 +42,8 @@ func New(
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Description = "HichApp API documentation"
 	docs.SwaggerInfo.BasePath = "/"
-	docs.SwaggerInfo.Host = cfg.HttpAddress
+	//docs.SwaggerInfo.Host = cfg.HttpAddress
+	docs.SwaggerInfo.Host = "localhost:8000"
 	docs.SwaggerInfo.Schemes = []string{"http"}
 
 	r := gin.New()

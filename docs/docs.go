@@ -109,8 +109,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK"
+                    "201": {
+                        "description": "Created"
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -151,8 +151,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK"
+                    "201": {
+                        "description": "Created"
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -241,8 +241,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK"
+                    "201": {
+                        "description": "Created"
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -264,6 +264,7 @@ const docTemplate = `{
             "properties": {
                 "options": {
                     "type": "array",
+                    "minItems": 2,
                     "items": {
                         "type": "string"
                     }
@@ -320,7 +321,6 @@ const docTemplate = `{
         "api.VoteReq": {
             "type": "object",
             "required": [
-                "option_index",
                 "user_id"
             ],
             "properties": {
@@ -328,17 +328,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "poll.Option": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "id": {
                     "type": "integer"
                 }
             }
@@ -352,7 +341,13 @@ const docTemplate = `{
                 "options": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/poll.Option"
+                        "type": "string"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 },
                 "title": {

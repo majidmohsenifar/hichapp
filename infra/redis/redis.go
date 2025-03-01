@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"github.com/majidmohsenifar/hichapp/infra/metrics"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -9,7 +10,7 @@ func NewRedisClient(redisAddress string) (redis.UniversalClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	return redis.NewUniversalClient(&redis.UniversalOptions{
+	rdb := redis.NewUniversalClient(&redis.UniversalOptions{
 		Addrs: []string{
 			opts.Addr,
 		},
@@ -37,6 +38,9 @@ func NewRedisClient(redisAddress string) (redis.UniversalClient, error) {
 		ReadOnly:              false,
 		RouteByLatency:        false,
 		RouteRandomly:         false,
-	}), nil
+	})
+
+	rdb.AddHook(&metrics.RedisMetricsHook{})
+	return rdb, nil
 
 }

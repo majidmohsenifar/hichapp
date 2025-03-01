@@ -18,6 +18,7 @@ import (
 	"github.com/majidmohsenifar/hichapp/handler/api/router"
 	"github.com/majidmohsenifar/hichapp/infra/db"
 	"github.com/majidmohsenifar/hichapp/infra/logger"
+	"github.com/majidmohsenifar/hichapp/infra/metrics"
 	"github.com/majidmohsenifar/hichapp/infra/redis"
 	"github.com/majidmohsenifar/hichapp/repository"
 	"github.com/majidmohsenifar/hichapp/service/limiter"
@@ -25,7 +26,6 @@ import (
 	"github.com/majidmohsenifar/hichapp/service/statistic"
 	"github.com/majidmohsenifar/hichapp/service/tag"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/collectors"
 )
 
 type HttpApp struct {
@@ -52,11 +52,14 @@ func RunHttpServer() {
 	}
 	logger := logger.NewLogger()
 	slog.SetDefault(logger)
-	//TODO: handle prom later
 	reg := prometheus.NewRegistry()
 	reg.MustRegister(
-		collectors.NewGoCollector(),
-		collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}),
+		metrics.RedisTotalCommands,
+		metrics.RedisDuration,
+		metrics.RedisCacheHits,
+		metrics.RedisCacheMisses,
+		metrics.DBTotalQueries,
+		metrics.DBQueryDuration,
 	)
 	httpApp, err := BuildHttpServer(ctx, cfg, reg)
 	if err != nil {
@@ -86,8 +89,12 @@ func BuildHttpServer(ctx context.Context, cfg *config.Config, reg *prometheus.Re
 	}
 
 	//run migrate here
+	migrationsPath := "file://./db/migrations"
+	if cfg.IsTestEnv {
+		migrationsPath = "file://../db/migrations"
+	}
 	m, err := migrate.New(
-		"file://../db/migrations",
+		migrationsPath,
 		cfg.PostgresDSN)
 	if err != nil {
 		slog.Error("cannot create migrations", "err", err)

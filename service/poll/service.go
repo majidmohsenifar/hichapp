@@ -3,7 +3,6 @@ package poll
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 
 	"github.com/jackc/pgx/v5"
@@ -42,10 +41,10 @@ type VoteOrSkipParams struct {
 }
 
 type SinglePollList struct {
-	ID      int64
-	Title   string
-	Options []string
-	Tags    []string
+	ID      int64    `json:"id"`
+	Title   string   `json:"title"`
+	Options []string `json:"options"`
+	Tags    []string `json:"tags"`
 }
 
 type PollListFilters struct {
@@ -216,7 +215,6 @@ func (s *Service) VoteOrSkip(ctx context.Context, params VoteOrSkipParams) error
 			//we do not return error as it is not critical
 		}
 		if !allowed {
-			fmt.Println("here we goooooooooooooooooooo d")
 			return ErrUserNotAllowedToVote
 		}
 

@@ -1,4 +1,4 @@
-FROM golang:1.22.4-bullseye AS BUILD
+FROM golang:1.24-bullseye AS BUILD
 WORKDIR /app
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 

@@ -53,7 +53,20 @@ func (app *TestApp) CreatePollWithOptionsAndTags(ctx context.Context, title stri
 	if err != nil {
 		panic(err)
 	}
-	_, err = app.repo.CreateTag(ctx, app.db, tags)
+
+	tagIDs, err := app.repo.CreateTags(ctx, app.db, tags)
+	if err != nil {
+		panic(err)
+	}
+
+	createPollTagsParams := make([]repository.CreatePollTagParams, len(tags))
+	for i, t := range tagIDs {
+		createPollTagsParams[i] = repository.CreatePollTagParams{
+			PollID: poll.ID,
+			TagID:  t,
+		}
+	}
+	_, err = app.repo.CreatePollTag(ctx, app.db, createPollTagsParams)
 	if err != nil {
 		panic(err)
 	}

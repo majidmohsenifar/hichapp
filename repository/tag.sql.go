@@ -9,6 +9,11 @@ import (
 	"context"
 )
 
+type CreatePollTagParams struct {
+	PollID int64
+	TagID  int64
+}
+
 const getTagByName = `-- name: GetTagByName :one
 SELECT id, name FROM tags WHERE name = $1
 `

@@ -42,13 +42,13 @@ func (q *Queries) CreateOption(ctx context.Context, db DBTX, arg []CreateOptionP
 	return db.CopyFrom(ctx, []string{"options"}, []string{"poll_id", "content"}, &iteratorForCreateOption{rows: arg})
 }
 
-// iteratorForCreateTag implements pgx.CopyFromSource.
-type iteratorForCreateTag struct {
-	rows                 []string
+// iteratorForCreatePollTag implements pgx.CopyFromSource.
+type iteratorForCreatePollTag struct {
+	rows                 []CreatePollTagParams
 	skippedFirstNextCall bool
 }
 
-func (r *iteratorForCreateTag) Next() bool {
+func (r *iteratorForCreatePollTag) Next() bool {
 	if len(r.rows) == 0 {
 		return false
 	}
@@ -60,16 +60,17 @@ func (r *iteratorForCreateTag) Next() bool {
 	return len(r.rows) > 0
 }
 
-func (r iteratorForCreateTag) Values() ([]interface{}, error) {
+func (r iteratorForCreatePollTag) Values() ([]interface{}, error) {
 	return []interface{}{
-		r.rows[0],
+		r.rows[0].PollID,
+		r.rows[0].TagID,
 	}, nil
 }
 
-func (r iteratorForCreateTag) Err() error {
+func (r iteratorForCreatePollTag) Err() error {
 	return nil
 }
 
-func (q *Queries) CreateTag(ctx context.Context, db DBTX, name []string) (int64, error) {
-	return db.CopyFrom(ctx, []string{"tags"}, []string{"name"}, &iteratorForCreateTag{rows: name})
+func (q *Queries) CreatePollTag(ctx context.Context, db DBTX, arg []CreatePollTagParams) (int64, error) {
+	return db.CopyFrom(ctx, []string{"poll_tags"}, []string{"poll_id", "tag_id"}, &iteratorForCreatePollTag{rows: arg})
 }

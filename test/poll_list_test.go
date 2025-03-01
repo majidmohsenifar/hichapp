@@ -117,7 +117,7 @@ func TestPollList_Successful(t *testing.T) {
 	slices.Contains(poll5Res.Tags, "tag9")
 	slices.Contains(poll5Res.Tags, "tag10")
 
-	//the second one should be poll4
+	//the second one should be poll6
 	poll6Res := apiResponse.Data[1]
 	assert.Equal(poll6Res.ID, poll6.ID)
 	assert.Equal(poll6Res.Title, poll6.Title)
@@ -145,4 +145,32 @@ func TestPollList_Successful(t *testing.T) {
 	err = json.Unmarshal(resBody, &apiResponse)
 	assert.Nil(err)
 	assert.Equal(0, len(apiResponse.Data))
+
+	//page 1 filter by tag
+	req, err = http.NewRequest("GET", fmt.Sprintf("%s/api/v1/polls?user_id=%d&page=%d&page_size=%d&tag=%s", app.address, 1, 0, 2, "tag12"), nil)
+	assert.Nil(err)
+	res, err = http.DefaultClient.Do(req)
+	assert.Nil(err)
+	assert.Equal(http.StatusOK, res.StatusCode)
+
+	resBody, err = io.ReadAll(res.Body)
+	assert.Nil(err)
+	apiResponse = struct {
+		Success bool                  `json:"success" example:"true"`
+		Message string                `json:"message,omitempty"`
+		Data    []poll.SinglePollList `json:"data,omitempty"`
+	}{}
+
+	err = json.Unmarshal(resBody, &apiResponse)
+	assert.Nil(err)
+	assert.Equal(1, len(apiResponse.Data))
+	poll6Res = apiResponse.Data[0]
+	assert.Equal(poll6Res.ID, poll6.ID)
+	assert.Equal(poll6Res.Title, poll6.Title)
+
+	slices.Contains(poll6Res.Options, "op11")
+	slices.Contains(poll6Res.Options, "op12")
+
+	slices.Contains(poll6Res.Tags, "tag11")
+	slices.Contains(poll6Res.Tags, "tag12")
 }

@@ -71,4 +71,11 @@ func TestCreatePoll_Successful(t *testing.T) {
 	assert.Len(options, len(params.Options))
 	assert.Equal(params.Options[0], options[0].Content)
 	assert.Equal(params.Options[1], options[1].Content)
+
+	//check the db for the created tags
+	tags, err := app.repo.GetTagsByPollIDs(t.Context(), app.db, []int64{poll.ID})
+	assert.Nil(err)
+	assert.Len(tags, len(params.Tags))
+	assert.Equal(params.Tags[0], tags[0].Name)
+	assert.Equal(params.Tags[1], tags[1].Name)
 }

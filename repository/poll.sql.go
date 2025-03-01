@@ -69,10 +69,9 @@ func (q *Queries) GetPaginatedPollsByUserID(ctx context.Context, db DBTX, arg Ge
 
 const getPaginatedPollsByUserIDTagID = `-- name: GetPaginatedPollsByUserIDTagID :many
 SELECT polls.id, polls.title, polls.created_at FROM polls 
-JOIN poll_tags ON polls.id = poll_tags.poll_id
+JOIN poll_tags ON polls.id = poll_tags.poll_id AND poll_tags.tag_id = $2
 LEFT JOIN votes ON polls.id = votes.poll_id AND votes.user_id = $1
-WHERE poll_tags.tag_id = $2
-AND votes.id IS NULL ORDER BY polls.id ASC LIMIT $3 OFFSET $4::BIGINT
+WHERE votes.id IS NULL ORDER BY polls.id ASC LIMIT $3 OFFSET $4::BIGINT
 `
 
 type GetPaginatedPollsByUserIDTagIDParams struct {

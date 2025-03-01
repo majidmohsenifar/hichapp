@@ -11,7 +11,7 @@ import (
 type Querier interface {
 	CreateOption(ctx context.Context, db DBTX, arg []CreateOptionParams) (int64, error)
 	CreatePoll(ctx context.Context, db DBTX, title string) (Poll, error)
-	CreateTag(ctx context.Context, db DBTX, name []string) (int64, error)
+	CreatePollTag(ctx context.Context, db DBTX, arg []CreatePollTagParams) (int64, error)
 	CreateVote(ctx context.Context, db DBTX, arg CreateVoteParams) (Vote, error)
 	GetLastCreatedPoll(ctx context.Context, db DBTX) (Poll, error)
 	GetOptionsByPollID(ctx context.Context, db DBTX, pollID int64) ([]Option, error)

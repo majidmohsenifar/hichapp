@@ -84,7 +84,21 @@ func (s *Service) CreatePoll(ctx context.Context, params CreatePollParams) (int6
 		return 0, errors.New("something went wrong creating option")
 	}
 
-	_, err = s.repository.CreateTag(ctx, dbTx, params.Tags)
+	tagIDs, err := s.repository.CreateTags(ctx, dbTx, params.Tags)
+	if err != nil {
+		dbTx.Rollback(ctx)
+		slog.Error("failed to create tag", "err", err)
+		return 0, errors.New("something went wrong creating tag")
+	}
+
+	createPollTagsParams := make([]repository.CreatePollTagParams, len(params.Tags))
+	for i, t := range tagIDs {
+		createPollTagsParams[i] = repository.CreatePollTagParams{
+			PollID: poll.ID,
+			TagID:  t,
+		}
+	}
+	_, err = s.repository.CreatePollTag(ctx, dbTx, createPollTagsParams)
 	if err != nil {
 		dbTx.Rollback(ctx)
 		slog.Error("failed to create tag", "err", err)
